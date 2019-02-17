@@ -2,6 +2,7 @@ package com.falcon.coach77
 
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -58,6 +59,23 @@ class MainFragment : Fragment() {
                     }
                     else {
                         imageButton1.setImageResource(R.drawable.ic_barcode_not_available)
+
+                        imageButton1.setOnLongClickListener {
+                            val builder = AlertDialog.Builder(activity)
+                            builder
+                                    .setTitle("Remove ticket")
+                                    .setMessage("Are you sure to remove this ticket?")
+//                                    .setView(FrameLayout(activity!!))
+                                    .setPositiveButton(android.R.string.yes) { _, _ ->
+                                        viewModel.removeTicket(activity!!, 0)
+                                    }
+                                    .setNegativeButton(android.R.string.no) { _, _ ->
+                                    }
+                                    .setIcon(R.drawable.ic_delete_forever_black_24dp)
+                                    .show()
+                             true
+                        }
+
                     }
                     ticketsLeft1.visibility = View.VISIBLE
                     imageButton1.setOnClickListener {

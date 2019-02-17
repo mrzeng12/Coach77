@@ -73,4 +73,13 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun removeTicket(context: Context, index: Int) {
+        val currentTickets = tickets.value
+        if (currentTickets != null) {
+            currentTickets[index].numberLeft = 0
+            currentTickets[index].isAvailable = false
+            updateTickets(context, currentTickets)
+        }
+    }
+
 }
