@@ -10,6 +10,8 @@ import java.io.*
 class BitmapTool {
 
     fun saveToInternalStorage(context: Context, bitmapImage: Bitmap, imageName: String): String {
+
+        val resizedBitmap = getResizedBitmap(bitmapImage, 1920)
         // path to /data/data/yourapp/app_data/imageDir
         val directory = context.getDir("imageDir", Context.MODE_PRIVATE)
         // Create imageDir
@@ -19,7 +21,7 @@ class BitmapTool {
         try {
             fos = FileOutputStream(mypath)
             // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            resizedBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
@@ -45,5 +47,21 @@ class BitmapTool {
             e.printStackTrace()
         }
 
+    }
+
+    fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap {
+        var width = image.width
+        var height = image.height
+
+        val bitmapRatio = width.toFloat() / height.toFloat()
+        if (bitmapRatio > 1) {
+            width = maxSize
+            height = (width / bitmapRatio).toInt()
+        } else {
+            height = maxSize
+            width = (height * bitmapRatio).toInt()
+        }
+
+        return Bitmap.createScaledBitmap(image, width, height, true)
     }
 }

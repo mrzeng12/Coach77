@@ -6,6 +6,8 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
 import android.provider.MediaStore
+import android.widget.Toast
+import kotlinx.coroutines.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
 
         imageButton1.setOnClickListener {
+            content_loading_progress_bar.show()
             val pickPhoto = Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(pickPhoto, 1)
@@ -49,9 +52,15 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             1 -> if (resultCode == Activity.RESULT_OK) {
                 val selectedImage = imageReturnedIntent?.data
-                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedImage)
-                BitmapTool().saveToInternalStorage(this, bitmap, "image1")
-//                BitmapTool().loadImageFromStorage(this, imageButton1, "image1")
+
+                GlobalScope.launch(Dispatchers.IO) {
+                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
+                        BitmapTool().saveToInternalStorage(this@MainActivity, bitmap, "image1")
+                    withContext(Dispatchers.Main) {
+                        content_loading_progress_bar.hide()
+                        Toast.makeText(this@MainActivity, "Load ticket successfully!", Toast.LENGTH_LONG).show()
+                    }
+                }
             }
             2 -> if (resultCode == Activity.RESULT_OK) {
                 val selectedImage = imageReturnedIntent?.data
