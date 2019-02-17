@@ -1,6 +1,7 @@
 package com.falcon.coach77
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
@@ -12,9 +13,13 @@ import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var viewModel: MainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
 //        val pref = act.getSharedPreferences(getString(com.falcon.kitchenbuddy.R.string.sp_name), 0)
 //        val foodListHistoryString = pref.getString(getString(com.falcon.kitchenbuddy.R.string.sp_key_selectedFoodList), null)
@@ -46,6 +51,8 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(pickPhoto, 4)
         }
     }
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, imageReturnedIntent: Intent?) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent)
