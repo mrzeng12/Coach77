@@ -27,7 +27,9 @@
         android:layout_marginTop="16dp"
         android:text="9 Left"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@android:color/black"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
@@ -36,7 +38,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:scaleType="center"
         android:src="@drawable/ic_barcode"
         app:layout_constraintBottom_toTopOf="@+id/useButton"
@@ -45,30 +47,29 @@
         app:layout_constraintTop_toBottomOf="@+id/titleTextView2" />
 
     <Button
+        android:id="@+id/unuseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:paddingEnd="16dp"
+        android:text="Unuse"
+        android:textAlignment="textEnd"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/titleTextView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/titleTextView2" />
+
+    <Button
         android:id="@+id/useButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:background="#4ABC96"
         android:text="Use"
         android:textColor="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/unuseButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/unuseButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:background="@null"
-        android:text="Unuse"
-        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -10,9 +10,12 @@ class TicketActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ticket)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         BitmapTool().loadImageFromStorage(this, imageView, "image1")
-
-
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
+    }
 }
