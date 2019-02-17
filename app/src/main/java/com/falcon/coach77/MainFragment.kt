@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.Navigation
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -35,75 +37,86 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        val imageButtonList = ArrayList<ImageButton>()
+        imageButtonList.add(imageButton1)
+        imageButtonList.add(imageButton2)
+        imageButtonList.add(imageButton3)
+        imageButtonList.add(imageButton4)
+
+        val ticketsLeftList = ArrayList<TextView>()
+        ticketsLeftList.add(ticketsLeft1)
+        ticketsLeftList.add(ticketsLeft2)
+        ticketsLeftList.add(ticketsLeft3)
+        ticketsLeftList.add(ticketsLeft4)
+
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        (activity as AppCompatActivity).supportActionBar?.title = "Coach 77"
+        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.app_name)
 
         viewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         viewModel.getTickets(activity!!)
 
         viewModel.tickets.observe(this, Observer { tickets ->
             if (tickets != null) {
-                if (!tickets[0].isAvailable){
-                    imageButton1.setImageResource(R.drawable.ic_add_circle_outline_black_24dp)
-                    ticketsLeft1.visibility = View.GONE
-                    imageButton1.setOnClickListener {
-                        content_loading_progress_bar.show()
-                        val pickPhoto = Intent(Intent.ACTION_PICK,
-                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                        startActivityForResult(pickPhoto, 1)
-                    }
-                }
-                else {
-                    if (tickets[0].numberLeft >0){
-                        imageButton1.setImageResource(R.drawable.ic_barcode)
-                    }
-                    else {
-                        imageButton1.setImageResource(R.drawable.ic_barcode_not_available)
+                for ((index, ticket) in tickets.withIndex()) {
+                    if (!ticket.isAvailable) {
+                        imageButtonList[index].setImageResource(R.drawable.ic_add_circle_outline_black_24dp)
+                        ticketsLeftList[index].visibility = View.GONE
+                        imageButtonList[index].setOnClickListener {
+                            val pickPhoto = Intent(Intent.ACTION_PICK,
+                                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                            startActivityForResult(pickPhoto, index)
+                        }
+                    } else {
+                        if (ticket.numberLeft > 0) {
+                            imageButtonList[index].setImageResource(R.drawable.ic_barcode)
+                        } else {
+                            imageButtonList[index].setImageResource(R.drawable.ic_barcode_not_available)
+                        }
+                        ticketsLeftList[index].visibility = View.VISIBLE
+                        imageButtonList[index].setOnClickListener {
+                            viewModel.selectedIndex.value = index
+                            Navigation.findNavController(activity!!, R.id.my_nav_host_fragment).navigate(R.id.ticketFragment)
+                        }
 
-                        imageButton1.setOnLongClickListener {
+                        imageButtonList[index].setOnLongClickListener {
                             val builder = AlertDialog.Builder(activity)
                             builder
                                     .setTitle("Remove ticket")
                                     .setMessage("Are you sure to remove this ticket?")
-//                                    .setView(FrameLayout(activity!!))
                                     .setPositiveButton(android.R.string.yes) { _, _ ->
-                                        viewModel.removeTicket(activity!!, 0)
+                                        viewModel.removeTicket(activity!!, index)
                                     }
                                     .setNegativeButton(android.R.string.no) { _, _ ->
                                     }
                                     .setIcon(R.drawable.ic_delete_forever_black_24dp)
                                     .show()
-                             true
+                            true
                         }
-
                     }
-                    ticketsLeft1.visibility = View.VISIBLE
-                    imageButton1.setOnClickListener {
-                        viewModel.selectedIndex.value = 0
-                        Navigation.findNavController(activity!!, R.id.my_nav_host_fragment).navigate(R.id.ticketFragment)
-                    }
+                    ticketsLeftList[index].text = ticket.numberLeft.toString() + " Left"
                 }
-                ticketsLeft1.text = tickets[0].numberLeft.toString() + " Left"
+
             }
         })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, imageReturnedIntent: Intent?) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent)
-        when (requestCode) {
-            1 -> if (resultCode == Activity.RESULT_OK) {
-                val selectedImage = imageReturnedIntent?.data
 
-                GlobalScope.launch(Dispatchers.IO) {
-                    val bitmap = MediaStore.Images.Media.getBitmap(activity!!.contentResolver, selectedImage)
-                    BitmapTool().saveToInternalStorage(activity!!, bitmap, "image1")
-                    withContext(Dispatchers.Main) {
-                        viewModel.addTicket(activity!!, 0)
-                        content_loading_progress_bar.hide()
-                        Toast.makeText(activity!!, "Load ticket successfully!", Toast.LENGTH_LONG).show()
-                    }
+        if (resultCode == Activity.RESULT_OK) {
+            val selectedImage = imageReturnedIntent?.data
+            content_loading_progress_bar.show()
+            GlobalScope.launch(Dispatchers.IO) {
+                val bitmap = MediaStore.Images.Media.getBitmap(activity!!.contentResolver, selectedImage)
+                val imageName = viewModel.tickets.value!![requestCode].imageName
+                BitmapTool().saveToInternalStorage(activity!!, bitmap, imageName)
+                withContext(Dispatchers.Main) {
+                    viewModel.addTicket(activity!!, requestCode)
+                    content_loading_progress_bar.hide()
+                    Toast.makeText(activity!!, "Load ticket successfully!", Toast.LENGTH_LONG).show()
                 }
             }
         }
+
     }
 }

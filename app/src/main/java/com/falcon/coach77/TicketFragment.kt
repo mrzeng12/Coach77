@@ -26,7 +26,7 @@ class TicketFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as AppCompatActivity).supportActionBar?.title = "Ticket"
+        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.title_fragment_ticket)
 
         viewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         viewModel.getTickets(activity!!)
@@ -59,11 +59,6 @@ class TicketFragment : Fragment() {
 
 
     }
-
-//    override fun onSupportNavigateUp(): Boolean {
-//        finish()
-//        return true
-//    }
 
 
 }
