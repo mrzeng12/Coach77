@@ -36,8 +36,8 @@ class MainViewModel : ViewModel() {
         return Gson().fromJson(ticketsString, object : TypeToken<java.util.ArrayList<TicketObject>>() {}.type)
     }
 
-    fun updateTickets(context: Context, updatedTickets: ArrayList<TicketObject>) {
-        tickets.value = updatedTickets
+    private fun updateTickets(context: Context, updatedTickets: ArrayList<TicketObject>) {
+        tickets.postValue(updatedTickets)
         val pref = context.getSharedPreferences(SP_NAME, 0)
         val editor = pref.edit()
         editor.putString(TICKETS_KEY, Gson().toJson(updatedTickets))
@@ -76,8 +76,26 @@ class MainViewModel : ViewModel() {
     fun removeTicket(context: Context, index: Int) {
         val currentTickets = tickets.value
         if (currentTickets != null) {
-            currentTickets[index].numberLeft = 0
-            currentTickets[index].isAvailable = false
+            if (index == 0 || index == 1){
+                if (index == 0) {
+                    BitmapTool().renameBitmap(context, currentTickets[1].imageName, currentTickets[0].imageName)
+                    currentTickets[0].numberLeft = currentTickets[1].numberLeft
+                    currentTickets[0].isAvailable = currentTickets[1].isAvailable
+                }
+                currentTickets[1].numberLeft = 0
+                currentTickets[1].isAvailable = false
+            }
+
+            if (index == 2 || index == 3){
+                if (index == 2) {
+                    BitmapTool().renameBitmap(context, currentTickets[3].imageName, currentTickets[2].imageName)
+                    currentTickets[2].numberLeft = currentTickets[3].numberLeft
+                    currentTickets[2].isAvailable = currentTickets[3].isAvailable
+                }
+                currentTickets[3].numberLeft = 0
+                currentTickets[3].isAvailable = false
+            }
+
             updateTickets(context, currentTickets)
         }
     }

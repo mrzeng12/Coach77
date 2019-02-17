@@ -84,7 +84,13 @@ class MainFragment : Fragment() {
                                     .setTitle("Remove ticket")
                                     .setMessage("Are you sure to remove this ticket?")
                                     .setPositiveButton(android.R.string.yes) { _, _ ->
-                                        viewModel.removeTicket(activity!!, index)
+                                        content_loading_progress_bar.show()
+                                        GlobalScope.launch(Dispatchers.IO) {
+                                            viewModel.removeTicket(activity!!, index)
+                                            withContext(Dispatchers.Main) {
+                                                content_loading_progress_bar.hide()
+                                            }
+                                        }
                                     }
                                     .setNegativeButton(android.R.string.no) { _, _ ->
                                     }
@@ -94,6 +100,18 @@ class MainFragment : Fragment() {
                         }
                     }
                     ticketsLeftList[index].text = ticket.numberLeft.toString() + " Left"
+
+                    if (!tickets[0].isAvailable && !tickets[1].isAvailable){
+                        imageButton2.visibility = View.INVISIBLE
+                    } else {
+                        imageButton2.visibility = View.VISIBLE
+                    }
+
+                    if (!tickets[2].isAvailable && !tickets[3].isAvailable){
+                        imageButton4.visibility = View.INVISIBLE
+                    } else {
+                        imageButton4.visibility = View.VISIBLE
+                    }
                 }
 
             }

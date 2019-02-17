@@ -49,6 +49,18 @@ class BitmapTool {
 
     }
 
+    fun renameBitmap(context: Context, originalName: String, newName: String){
+        try {
+            // path to /data/data/yourapp/app_data/imageDir
+            val directory = context.getDir("imageDir", Context.MODE_PRIVATE)
+            val f = File(directory, originalName)
+            val b = BitmapFactory.decodeStream(FileInputStream(f))
+            saveToInternalStorage(context, b, newName)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+    }
+
     fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap {
         var width = image.width
         var height = image.height
