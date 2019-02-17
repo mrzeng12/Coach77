@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Coach 77</string>
     <string name="title_activity_ticket">Ticket</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

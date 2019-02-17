@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken
 
 class MainViewModel : ViewModel() {
     var tickets = MutableLiveData<ArrayList<TicketObject>>()
+    var selectedIndex = MutableLiveData<Int>()
 
     fun getTickets(context: Context) {
         if (tickets.value == null) {
