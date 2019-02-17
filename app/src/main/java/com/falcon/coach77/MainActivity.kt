@@ -1,14 +1,19 @@
 package com.falcon.coach77
 
 import android.app.Activity
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
+import android.os.Bundle
 import android.provider.MediaStore
+import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.Toast
-import kotlinx.coroutines.*
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MainActivity : AppCompatActivity() {
@@ -20,38 +25,40 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel.getTickets(this)
 
-//        val pref = act.getSharedPreferences(getString(com.falcon.kitchenbuddy.R.string.sp_name), 0)
-//        val foodListHistoryString = pref.getString(getString(com.falcon.kitchenbuddy.R.string.sp_key_selectedFoodList), null)
-//
-//        val editor = pref.edit()
+        viewModel.tickets.observe(this, Observer { tickets ->
+            if (tickets != null) {
+                if (!tickets[0].isAvailable){
+                    imageButton1.setImageResource(R.drawable.ic_add_circle_outline_black_24dp)
+                    ticketsLeft1.visibility = View.GONE
+                    imageButton1.setOnClickListener {
+                        content_loading_progress_bar.show()
+                        val pickPhoto = Intent(Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                        startActivityForResult(pickPhoto, 1)
+                    }
+                }
+                else {
+                    if (tickets[0].numberLeft >0){
+                        imageButton1.setImageResource(R.drawable.ic_barcode)
+                    }
+                    else {
+                        imageButton1.setImageResource(R.drawable.ic_barcode_not_available)
+                    }
+                    ticketsLeft1.visibility = View.VISIBLE
+                    imageButton1.setOnClickListener {
+                        val intent = Intent(this, TicketActivity::class.java)
+                        intent.putExtra("ticket-id",0)
+                        startActivity(intent)
+                    }
+                }
+                ticketsLeft1.text = tickets[0].numberLeft.toString() + " Left"
+            }
+        })
 
 
-        imageButton1.setOnClickListener {
-            content_loading_progress_bar.show()
-            val pickPhoto = Intent(Intent.ACTION_PICK,
-                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(pickPhoto, 1)
-        }
-        imageButton2.setOnClickListener {
-//            val pickPhoto = Intent(Intent.ACTION_PICK,
-//                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-//            startActivityForResult(pickPhoto, 2)
-            val intent = Intent(this, TicketActivity::class.java)
-            startActivity(intent)
-        }
-        imageButton3.setOnClickListener {
-            val pickPhoto = Intent(Intent.ACTION_PICK,
-                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(pickPhoto, 3)
-        }
-        imageButton4.setOnClickListener {
-            val pickPhoto = Intent(Intent.ACTION_PICK,
-                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(pickPhoto, 4)
-        }
     }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, imageReturnedIntent: Intent?) {
@@ -64,28 +71,11 @@ class MainActivity : AppCompatActivity() {
                     val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
                         BitmapTool().saveToInternalStorage(this@MainActivity, bitmap, "image1")
                     withContext(Dispatchers.Main) {
+                        viewModel.addTicket(this@MainActivity, 0)
                         content_loading_progress_bar.hide()
                         Toast.makeText(this@MainActivity, "Load ticket successfully!", Toast.LENGTH_LONG).show()
                     }
                 }
-            }
-            2 -> if (resultCode == Activity.RESULT_OK) {
-                val selectedImage = imageReturnedIntent?.data
-                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedImage)
-                BitmapTool().saveToInternalStorage(this, bitmap, "image2")
-//                BitmapTool().loadImageFromStorage(this, imageButton1, "image1")
-            }
-            3 -> if (resultCode == Activity.RESULT_OK) {
-                val selectedImage = imageReturnedIntent?.data
-                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedImage)
-                BitmapTool().saveToInternalStorage(this, bitmap, "image3")
-//                BitmapTool().loadImageFromStorage(this, imageButton1, "image1")
-            }
-            4 -> if (resultCode == Activity.RESULT_OK) {
-                val selectedImage = imageReturnedIntent?.data
-                val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, selectedImage)
-                BitmapTool().saveToInternalStorage(this, bitmap, "image4")
-//                BitmapTool().loadImageFromStorage(this, imageButton1, "image1")
             }
         }
     }

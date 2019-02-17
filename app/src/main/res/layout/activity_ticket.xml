@@ -8,7 +8,7 @@
 
 
     <TextView
-        android:id="@+id/titleTextView"
+        android:id="@+id/locationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/titleTextView2"
+        android:id="@+id/ticketsLeftTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -31,7 +31,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/locationTextView" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toTopOf="@+id/useButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextView2" />
+        app:layout_constraintTop_toBottomOf="@+id/ticketsLeftTextView" />
 
     <Button
         android:id="@+id/unuseButton"
@@ -55,9 +55,9 @@
         android:text="Unuse"
         android:textAlignment="textEnd"
         android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/titleTextView2"
+        app:layout_constraintBottom_toBottomOf="@+id/ticketsLeftTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/titleTextView2" />
+        app:layout_constraintTop_toTopOf="@+id/ticketsLeftTextView" />
 
     <Button
         android:id="@+id/useButton"
@@ -66,10 +66,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="#4ABC96"
+        android:background="@drawable/button_background_primary"
+
         android:text="Use"
         android:textColor="@android:color/white"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
