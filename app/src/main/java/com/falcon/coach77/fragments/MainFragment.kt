@@ -1,4 +1,4 @@
-package com.falcon.coach77
+package com.falcon.coach77.fragments
 
 
 import android.app.Activity
@@ -17,6 +17,9 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.Navigation
+import com.falcon.coach77.tool.BitmapTool
+import com.falcon.coach77.model.MainViewModel
+import com.falcon.coach77.R
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -74,8 +77,9 @@ class MainFragment : Fragment() {
                         }
                         ticketsLeftList[index].visibility = View.VISIBLE
                         imageButtonList[index].setOnClickListener {
-                            viewModel.selectedIndex.value = index
-                            Navigation.findNavController(activity!!, R.id.my_nav_host_fragment).navigate(R.id.ticketFragment)
+                            val bundle = Bundle()
+                            bundle.putInt("selectedTicketIndex", index)
+                            Navigation.findNavController(activity!!, R.id.my_nav_host_fragment).navigate(R.id.ticketFragment, bundle)
                         }
 
                         imageButtonList[index].setOnLongClickListener {
@@ -101,13 +105,13 @@ class MainFragment : Fragment() {
                     }
                     ticketsLeftList[index].text = ticket.numberLeft.toString() + " Left"
 
-                    if (!tickets[0].isAvailable && !tickets[1].isAvailable){
+                    if (!tickets[0].isAvailable && !tickets[1].isAvailable) {
                         imageButton2.visibility = View.INVISIBLE
                     } else {
                         imageButton2.visibility = View.VISIBLE
                     }
 
-                    if (!tickets[2].isAvailable && !tickets[3].isAvailable){
+                    if (!tickets[2].isAvailable && !tickets[3].isAvailable) {
                         imageButton4.visibility = View.INVISIBLE
                     } else {
                         imageButton4.visibility = View.VISIBLE

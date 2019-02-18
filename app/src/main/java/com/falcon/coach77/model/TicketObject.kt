@@ -1,4 +1,4 @@
-package com.falcon.coach77
+package com.falcon.coach77.model
 
 data class TicketObject (
         val imageName: String,

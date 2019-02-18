@@ -5,10 +5,11 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.falcon.coach77.MainFragment"
+        android:name="com.falcon.coach77.fragments.MainFragment"
         android:label="MainFragment" />
     <fragment
         android:id="@+id/ticketFragment"
-        android:name="com.falcon.coach77.TicketFragment"
-        android:label="TicketFragment" />
+        android:name="com.falcon.coach77.fragments.TicketFragment"
+        android:label="TicketFragment" >
+    </fragment>
 </navigation>

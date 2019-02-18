@@ -1,14 +1,14 @@
-package com.falcon.coach77
+package com.falcon.coach77.model
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.content.Context
+import com.falcon.coach77.tool.BitmapTool
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class MainViewModel : ViewModel() {
     var tickets = MutableLiveData<ArrayList<TicketObject>>()
-    var selectedIndex = MutableLiveData<Int>()
 
     fun getTickets(context: Context) {
         if (tickets.value == null) {

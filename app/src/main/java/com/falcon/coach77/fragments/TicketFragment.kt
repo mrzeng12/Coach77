@@ -1,4 +1,4 @@
-package com.falcon.coach77
+package com.falcon.coach77.fragments
 
 
 import android.arch.lifecycle.Observer
@@ -9,6 +9,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.falcon.coach77.tool.BitmapTool
+import com.falcon.coach77.model.MainViewModel
+import com.falcon.coach77.R
 import kotlinx.android.synthetic.main.fragment_ticket.*
 
 class TicketFragment : Fragment() {
@@ -30,7 +33,7 @@ class TicketFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         viewModel.getTickets(activity!!)
-        val ticketId = viewModel.selectedIndex.value
+        val ticketId = arguments?.getInt("selectedTicketIndex")
         viewModel.tickets.observe(this, Observer { tickets ->
             if (tickets != null && ticketId != null) {
                 BitmapTool().loadImageFromStorage(activity!!, imageView, tickets[ticketId].imageName)
