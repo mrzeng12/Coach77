@@ -5,21 +5,27 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.ContentResolver
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.Navigation
-import com.falcon.coach77.tool.BitmapTool
-import com.falcon.coach77.model.MainViewModel
 import com.falcon.coach77.R
+import com.falcon.coach77.model.MainViewModel
+import com.falcon.coach77.tool.BitmapTool
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -31,6 +37,13 @@ class MainFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
 
+    //Variable to store brightness value
+    private var brightness: Int = 0
+    //Content resolver used as a handle to the system's settings
+    private var cResolver: ContentResolver? = null
+    //Window object, that will store a reference to the current window
+    private var window: Window? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -39,6 +52,43 @@ class MainFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.System.canWrite(context)) {
+                // Do stuff here
+                cResolver = activity?.contentResolver
+
+                //Get the current window
+                window = activity?.window
+
+                try {
+                    // To handle the auto
+                    Settings.System.putInt(cResolver,
+                            Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)
+                    //Get the current system brightness
+                    brightness = Settings.System.getInt(cResolver, Settings.System.SCREEN_BRIGHTNESS)
+                    Log.d("brightness", brightness.toString())
+                } catch (e: Settings.SettingNotFoundException) {
+                    //Throw an error case it couldn't be retrieved
+                    Log.e("Error", "Cannot access system brightness")
+                    e.printStackTrace()
+                }
+
+                //Set the system brightness using the brightness variable value
+                Settings.System.putInt(cResolver, Settings.System.SCREEN_BRIGHTNESS, brightness)
+                //Get the current window attributes
+                val layoutpars = window?.attributes
+                //Set the brightness of this window
+                layoutpars?.screenBrightness = brightness / 255.toFloat()
+                //Apply attribute changes to this window
+                window?.attributes = layoutpars
+            } else {
+                val intent = Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                intent.data = Uri.parse("package:" + activity!!.packageName)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+        }
 
         val imageButtonList = ArrayList<ImageButton>()
         imageButtonList.add(imageButton1)
