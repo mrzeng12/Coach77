@@ -23,8 +23,6 @@ import kotlinx.android.synthetic.main.fragment_ticket.*
 
 class TicketFragment : Fragment() {
 
-    //Variable to store brightness value
-    private var brightness: Int = 0
     //Content resolver used as a handle to the system's settings
     private var cResolver: ContentResolver? = null
     //Window object, that will store a reference to the current window
@@ -49,8 +47,6 @@ class TicketFragment : Fragment() {
             //Get the current window
             window = activity?.window
 
-            //Set the system brightness using the brightness variable value
-            Settings.System.putInt(cResolver, Settings.System.SCREEN_BRIGHTNESS, brightness)
             //Get the current window attributes
             val layoutpars = window?.attributes
             //Set the brightness of this window
