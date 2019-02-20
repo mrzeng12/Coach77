@@ -7,6 +7,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.ContentResolver
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -154,6 +155,11 @@ class MainFragment : Fragment() {
                         }
                     }
                     ticketsLeftList[index].text = ticket.numberLeft.toString() + " Left"
+                    if (ticket.numberLeft < 3) {
+                        ticketsLeftList[index].setTextColor(Color.RED)
+                    } else {
+                        ticketsLeftList[index].setTextColor(Color.WHITE)
+                    }
 
                     if (!tickets[0].isAvailable && !tickets[1].isAvailable) {
                         imageButton2.visibility = View.INVISIBLE

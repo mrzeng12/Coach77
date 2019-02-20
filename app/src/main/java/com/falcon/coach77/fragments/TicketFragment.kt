@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.ContentResolver
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -70,6 +71,13 @@ class TicketFragment : Fragment() {
             if (tickets != null && ticketId != null) {
                 BitmapTool().loadImageFromStorage(activity!!, imageView, tickets[ticketId].imageName)
                 ticketsLeftTextView.text = tickets[ticketId].numberLeft.toString() + " Left"
+
+                if (tickets[ticketId].numberLeft < 3){
+                    ticketsLeftTextView.setTextColor(Color.RED)
+                } else {
+                    ticketsLeftTextView.setTextColor(Color.BLACK)
+                }
+
                 if (ticketId < tickets.size / 2) {
                     locationTextView.text = "West Orange"
                 } else {
