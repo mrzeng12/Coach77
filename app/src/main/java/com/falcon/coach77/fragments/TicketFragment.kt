@@ -42,23 +42,25 @@ class TicketFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //Get the content resolver
-            cResolver = activity?.contentResolver
+            if (Settings.System.canWrite(context)) {
+                //Get the content resolver
+                cResolver = activity?.contentResolver
 
-            //Get the current window
-            window = activity?.window
+                //Get the current window
+                window = activity?.window
 
-            //Get the current window attributes
-            val layoutpars = window?.attributes
-            //Set the brightness of this window
-            layoutpars?.screenBrightness = 1.0f
-            //Apply attribute changes to this window
-            window?.attributes = layoutpars
-        } else {
-            val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-            intent.data = Uri.parse("package:" + activity!!.packageName)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+                //Get the current window attributes
+                val layoutpars = window?.attributes
+                //Set the brightness of this window
+                layoutpars?.screenBrightness = 1.0f
+                //Apply attribute changes to this window
+                window?.attributes = layoutpars
+            } else {
+                val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                intent.data = Uri.parse("package:" + activity!!.packageName)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
         }
 
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -72,7 +74,7 @@ class TicketFragment : Fragment() {
                 BitmapTool().loadImageFromStorage(activity!!, imageView, tickets[ticketId].imageName)
                 ticketsLeftTextView.text = tickets[ticketId].numberLeft.toString() + " Left"
 
-                if (tickets[ticketId].numberLeft < 3){
+                if (tickets[ticketId].numberLeft < 3) {
                     ticketsLeftTextView.setTextColor(Color.RED)
                 } else {
                     ticketsLeftTextView.setTextColor(Color.BLACK)
