@@ -10,10 +10,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.falcon.coach77.R
 import com.falcon.coach77.model.MainViewModel
 import com.falcon.coach77.tool.BitmapTool
 import kotlinx.android.synthetic.main.fragment_ticket.*
+import java.util.*
 
 
 class TicketFragment : Fragment() {
@@ -67,6 +69,21 @@ class TicketFragment : Fragment() {
 
         useButton.setOnClickListener {
             viewModel.useTicket(activity!!, ticketId!!)
+            useButton.isClickable = false
+            useButton.visibility = View.INVISIBLE
+            Toast.makeText(activity!!, "Just used ...", Toast.LENGTH_SHORT).show()
+
+            val buttonTimer = Timer()
+            buttonTimer.schedule(object : TimerTask() {
+
+                override fun run() {
+                    it.post {
+                        useButton.isClickable = true
+                        useButton.visibility = View.VISIBLE
+                    }
+                }
+            }, 3500)
+
         }
 
         unuseButton.setOnClickListener {
