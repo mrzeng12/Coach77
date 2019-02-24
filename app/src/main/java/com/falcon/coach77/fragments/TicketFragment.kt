@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,9 +52,9 @@ class TicketFragment : Fragment() {
                 }
 
                 if (ticketId < tickets.size / 2) {
-                    locationTextView.text = "West Orange"
+                    locationTextView.text = viewModel.zone1Name.value
                 } else {
-                    locationTextView.text = "Livingston"
+                    locationTextView.text = viewModel.zone2Name.value
                 }
                 if (tickets[ticketId].numberLeft < 10) {
                     unuseButton.visibility = View.VISIBLE

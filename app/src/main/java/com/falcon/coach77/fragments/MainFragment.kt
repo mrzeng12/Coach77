@@ -11,10 +11,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -44,6 +41,8 @@ class MainFragment : Fragment() {
         val layout = activity?.window?.attributes
         layout?.screenBrightness = -1f
         activity?.window?.attributes = layout
+
+        setHasOptionsMenu(true)
 
         val imageButtonList = ArrayList<ImageButton>()
         imageButtonList.add(imageButton1)
@@ -130,6 +129,31 @@ class MainFragment : Fragment() {
 
             }
         })
+
+        viewModel.getZoneName(activity!!)
+
+        viewModel.zone1Name.observe(this, Observer {
+            textView.text = it
+            editText.setText(it)
+        })
+
+        viewModel.zone2Name.observe(this, Observer {
+            textView2.text = it
+            editText2.setText(it)
+        })
+
+        saveButton.setOnClickListener {
+
+            activity?.let { viewModel.saveZoneName(it, editText.text.toString(), editText2.text.toString())}
+
+            textView.visibility = View.VISIBLE
+            editText.visibility = View.GONE
+
+            textView2.visibility = View.VISIBLE
+            editText2.visibility = View.GONE
+
+            saveButton.visibility = View.GONE
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, imageReturnedIntent: Intent?) {
@@ -150,5 +174,23 @@ class MainFragment : Fragment() {
             }
         }
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        textView.visibility = View.GONE
+        editText.visibility = View.VISIBLE
+
+        textView2.visibility = View.GONE
+        editText2.visibility = View.VISIBLE
+
+        saveButton.visibility = View.VISIBLE
+
+        editText.requestFocus()
+        return true
     }
 }

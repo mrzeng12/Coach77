@@ -9,6 +9,8 @@ import com.google.gson.reflect.TypeToken
 
 class MainViewModel : ViewModel() {
     var tickets = MutableLiveData<ArrayList<TicketObject>>()
+    var zone1Name = MutableLiveData<String>()
+    var zone2Name = MutableLiveData<String>()
 
     fun getTickets(context: Context) {
         if (tickets.value == null) {
@@ -29,6 +31,8 @@ class MainViewModel : ViewModel() {
     private val SP_NAME = "coach_tickets_sp"
 
     private val TICKETS_KEY = "tickets"
+    private val ZONE_1_KEY = "zone1Name"
+    private val ZONE_2_KEY = "zone2Name"
 
     fun getTicketsFromSP(context: Context): ArrayList<TicketObject>? {
         val pref = context.getSharedPreferences(SP_NAME, 0)
@@ -42,6 +46,22 @@ class MainViewModel : ViewModel() {
         val editor = pref.edit()
         editor.putString(TICKETS_KEY, Gson().toJson(updatedTickets))
         editor.apply()
+    }
+
+    fun saveZoneName(context: Context, zone1: String, zone2: String) {
+        zone1Name.postValue(zone1)
+        zone2Name.postValue(zone2)
+        val pref = context.getSharedPreferences(SP_NAME, 0)
+        val editor = pref.edit()
+        editor.putString(ZONE_1_KEY, zone1)
+        editor.putString(ZONE_2_KEY, zone2)
+        editor.apply()
+    }
+
+    fun getZoneName(context: Context) {
+        val pref = context.getSharedPreferences(SP_NAME, 0)
+        zone1Name.postValue(pref.getString(ZONE_1_KEY, "Zone 1"))
+        zone2Name.postValue(pref.getString(ZONE_2_KEY, "Zone 2"))
     }
 
     fun addTicket(context: Context, index: Int) {
