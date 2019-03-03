@@ -42,6 +42,19 @@ class TicketFragment : Fragment() {
         viewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
         viewModel.getTickets(activity!!)
         val ticketId = arguments?.getInt("selectedTicketIndex")
+
+        viewModel.getZoneName(activity!!)
+        viewModel.zone1Name.observe(this, Observer {
+            if (ticketId != null && ticketId < 2) {
+                locationTextView.text = it
+            }
+        })
+        viewModel.zone2Name.observe(this, Observer {
+            if (ticketId != null && ticketId >= 2) {
+                locationTextView.text = it
+            }
+        })
+
         viewModel.tickets.observe(this, Observer { tickets ->
             if (tickets != null && ticketId != null) {
                 BitmapTool().loadImageFromStorage(activity!!, imageView, tickets[ticketId].imageName)
@@ -53,11 +66,6 @@ class TicketFragment : Fragment() {
                     ticketsLeftTextView.setTextColor(Color.BLACK)
                 }
 
-                if (ticketId < tickets.size / 2) {
-                    locationTextView.text = viewModel.zone1Name.value
-                } else {
-                    locationTextView.text = viewModel.zone2Name.value
-                }
                 if (tickets[ticketId].numberLeft < 10) {
                     unuseButton.visibility = View.VISIBLE
                 } else {
